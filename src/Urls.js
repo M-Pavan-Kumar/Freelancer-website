@@ -1,0 +1,1 @@
+export const baseUrl="https://freelancer-mern-1.onrender.com"

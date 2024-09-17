@@ -3,10 +3,12 @@ import { Link, useParams } from 'react-router-dom';
 import Nav1 from './Nav1';
 import axios from 'axios';
 
+const baseUrl = "https://freelancer-mern-1.onrender.com"; 
+
 const Indprofile = () => {
-    const { name, email, skill, mobile,_id } = useParams();
-    const [rating, setRating] = useState('null');
-    const [taskprovider, setTaskprovider] = useState('null');
+    const { name, email, skill, mobile, _id } = useParams();
+    const [rating, setRating] = useState('');
+    const [taskprovider, setTaskprovider] = useState('');
 
     const handleRatingChange = (e) => {
         const value = e.target.value;
@@ -19,26 +21,31 @@ const Indprofile = () => {
         setTaskprovider(e.target.value);
     };
 
-    const submitHandler = (e) => {
-        
+    const submitHandler = async (e) => {
         e.preventDefault(); // Prevents page reload
-        axios.get("http://localhost:5000/myprofile", {
-            headers: {
-                'x-auth-token': localStorage.getItem('token')
-            }
-        }).then(res => setTaskprovider(res.data.name));
-        const review = {
-            taskprovider,
-            taskworker:_id,
-            rating,
-        };
+        try {
+            const response = await axios.get(`${baseUrl}/myprofile`, {
+                headers: {
+                    'x-auth-token': localStorage.getItem('token')
+                }
+            });
+            setTaskprovider(response.data.name);
 
-        axios.post("http://localhost:5000/addreview", review, {
-            headers: {
-                'x-auth-token': localStorage.getItem('token')
-            }
-        }).then(res => alert(res.data))
-        .catch(err => alert('Error: ' + err.message));
+            const review = {
+                taskprovider: response.data.name,
+                taskworker: _id,
+                rating,
+            };
+
+            const reviewResponse = await axios.post(`${baseUrl}/addreview`, review, {
+                headers: {
+                    'x-auth-token': localStorage.getItem('token')
+                }
+            });
+            alert(reviewResponse.data);
+        } catch (err) {
+            alert('Error: ' + err.message);
+        }
     };
 
     return (
@@ -46,7 +53,11 @@ const Indprofile = () => {
             <Nav1 />
             <div className="dashboard">
                 <div className="profile-card">
-                    <img className="profile-avatar" src={"https://tse1.mm.bing.net/th?id=OIP.wHmdLYdYLIK6dd3RC_NnNgHaHa&pid=Api&P=0&h=180"} alt="Avatar" />
+                    <img 
+                        className="profile-avatar" 
+                        src="https://tse1.mm.bing.net/th?id=OIP.wHmdLYdYLIK6dd3RC_NnNgHaHa&pid=Api&P=0&h=180" 
+                        alt="Avatar" 
+                    />
                     <h2 className="profile-name">{name}</h2>
                     <p className="profile-email">{email}</p>
                     <p className="profile-bio"></p>
@@ -72,7 +83,6 @@ const Indprofile = () => {
                             value={rating} 
                             onChange={handleRatingChange}
                         />
-                        
                         <br />
                         <button onClick={submitHandler} className='rev-button'>Add rating</button>
                     </div>

@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useNavigate,Navigate } from 'react-router-dom';
 import './Login.css';
 
+const baseUrl = "https://freelancer-mern-1.onrender.com";
+
 const Login = () => {
   useEffect(() => {
     document.body.classList.add('login-page1');
@@ -28,7 +30,7 @@ const Login = () => {
     event.preventDefault();
     console.log(data);
     try {
-      const res = await axios.post('http://localhost:5000/login', data);
+      const res = await axios.post(`${baseUrl}/login`, data);
       localStorage.setItem('token', res.data.token);
       setAuth(true);
     } catch (error) {

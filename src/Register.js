@@ -9,6 +9,8 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import "./Register.css";
 
+const baseUrl = "https://freelancer-mern-1.onrender.com";
+
 const Register = () => {
     useEffect(() => {
         document.body.classList.add('register-page');
@@ -35,7 +37,7 @@ const Register = () => {
     const submitHandler = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/register', data);
+            const response = await axios.post(`${baseUrl}/register`, data);
             alert(response.data); // Handle success response
             navigate('/login'); // Navigate to login page on successful registration
         } catch (error) {
